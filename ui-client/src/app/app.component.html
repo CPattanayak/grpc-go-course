@@ -1,0 +1,19 @@
+
+<h5>angular-grpc-single</h5>
+<p>{{greet | json}}</p>
+<h5>angular-grpc-bidirectional</h5>
+<p>{{bidirectionalResponse | async | json }}</p>
+<h5>error-grpc-list</h5>
+<ul>
+  <li *ngFor="let item of api.errorList">
+    {{item}}
+  </li>
+</ul>
+<h5>angular-grpc-serverstream</h5>
+
+
+<ul>
+  <li *ngFor="let item of receivedList">
+    {{item}}
+  </li>
+</ul>
