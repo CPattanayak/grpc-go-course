@@ -1,0 +1,16 @@
+package: grpc-go-course/greet
+import:
+- package: github.com/CPattanayak/grpc-go-course
+  subpackages:
+  - greet/greetpb
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+- package: github.com/improbable-eng/grpc-web
+  subpackages:
+  - go/grpcweb
+- package: google.golang.org/grpc
+  subpackages:
+  - codes
+  - grpclog
+  - status

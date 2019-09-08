@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"grpc-swagger-go/greet/greetpb"
+	"github.com/CPattanayak/grpc-swagger-go/greet/greetpb"
 	"io"
 	"log"
 	"net/http"
