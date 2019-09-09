@@ -21,4 +21,7 @@
  echo "#############################"
  echo "build successful"
  echo "#############################"
+ echo "starting backend and ui server"
+ echo "############################"
  
+ grpc-go-course & cd ui-client;npm start && fg

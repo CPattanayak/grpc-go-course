@@ -1,0 +1,4 @@
+vendor
+*.exe
+ui-client/node_modules
+ui-client/*-lock.json
