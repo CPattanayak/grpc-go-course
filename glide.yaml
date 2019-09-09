@@ -1,8 +1,5 @@
 package: grpc-go-course
 import:
-- package: github.com/CPattanayak/grpc-go-course
-  subpackages:
-  - greet/greetpb
 - package: github.com/golang/protobuf
   subpackages:
   - proto
