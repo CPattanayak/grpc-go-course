@@ -8,6 +8,8 @@ This project demonstrate how to use grc with golang and Angularjs
 	 6.glide installer [docs](https://glide.sh/)
 ## Project setup
      1.add $GOPATH/bin ,protoc/bin,glide as classpath
+	 2. checkout project in $GOPATH/src
 ## Running Project
-     ./build.sh access UI [url](http://localhost:4200)
+     1. change project_path in build.sh as $GOPATH/src/grpc-go-course
+     2. ./build.sh access UI [url](http://localhost:4200)
 
