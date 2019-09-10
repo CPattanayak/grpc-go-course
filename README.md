@@ -1,4 +1,4 @@
-This project demonstrate how to use grc with golang and Angularjs
+This project demonstrate how to use grpc with golang and Angularjs
 ## Project Requirement
      1.go installer [docs](https://golang.org/doc/install)
 	 2.Nodejs [docs](https://nodejs.org/en/download/)
