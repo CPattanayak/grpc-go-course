@@ -17,30 +17,34 @@ export class GreetService {
 
   getGreatEveryOne() : Observable <GreetEveryOneResponse>{
     return new Observable(obs=>{
-
+      const stream = this.client.greetEveryOne();
+      stream.on('status', (status: Status) => {
+       // console.log('ApiService.getStream.status', status);
+      });
+      stream.on('data', (message: any) => {
+       //console.log('ApiService.getStream.data', message.toObject());
+        obs.next(message.toObject() as GreetEveryOneResponse);
+      });
+      stream.on('end', () => {
+        //console.log('ApiService.getStream.end');
+        //setTimeout(()=>{alert("1") }, 1000000);
+        obs.complete();
+        // obs.error();
+      });
 
       for(var i=0;i<10;i++){
       const req = new GreetEveryOneRequest();
       const great = new Greeting();
       great.setFirstName("Chandan"+i);
       great.setLastName("Pattanayak");
+      //setTimeout(()=>{alert("1") }, 10000);
       req.setGreeting(great);
-      const stream = this.client.greetEveryOne();
-      stream.on('status', (status: Status) => {
-       // console.log('ApiService.getStream.status', status);
-      });
-      stream.on('data', (message: any) => {
-       // console.log('ApiService.getStream.data', message.toObject());
-        obs.next(message.toObject() as GreetEveryOneResponse);
-      });
-      stream.on('end', () => {
-       // console.log('ApiService.getStream.end');
-        obs.complete();
-        // obs.error();
-      });
+
       stream.write(req);
+
       }
-      //stream.end();
+      //setTimeout(()=>{alert("1") }, 1000000);
+     // stream.end();
     });
 
   }

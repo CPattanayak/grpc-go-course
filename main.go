@@ -36,6 +36,7 @@ func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) er
 		sendErr := stream.Send(&greetpb.GreetEveryOneResponse{
 			Result: result,
 		})
+		//time.Sleep(1000 * time.Millisecond)
 		if sendErr != nil {
 			log.Fatalf("Error while sending data to client: %v", err)
 			return err
