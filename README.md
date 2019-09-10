@@ -11,6 +11,7 @@ This project demonstrate how to use grpc with golang and Angularjs
      1.add $GOPATH/bin ,protoc/bin,glide as classpath
 	 2. checkout project in $GOPATH/src
 ## Running Project
-     1. change project_path in build.sh as $GOPATH/src/grpc-go-course
+     1. change project_path in build.sh as $GOPATH/src/grpc-go-course (Script to build proto and run)/run.sh when only build and run
+	 
      2. ./build.sh access UI [url](http://localhost:4200)
 
