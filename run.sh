@@ -1,3 +1,3 @@
  #!/bin/bash
- go build
- grpc-go-course & cd ui-client;npm start && fg
+ glide install
+ go run main.go & cd ui-client;npm start && fg
