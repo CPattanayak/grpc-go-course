@@ -22,7 +22,7 @@ export class GreetService {
       const stream = this.client.greetEveryOne();
 
 
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < 5000; i++) {
       this.promoseList.push(new Promise((resolve, reject) => {
         const req = new GreetEveryOneRequest();
         const great = new Greeting();
@@ -37,7 +37,7 @@ export class GreetService {
     }
       Promise.all(this.promoseList).then(() => {
        // alert('1');
-        resolve1('all 1000 records are send to server');
+        resolve1('all' + this.promoseList.length + ' records are send to server');
 
     });
       //obs.complete();
