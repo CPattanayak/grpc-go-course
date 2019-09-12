@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"sync"
 
-	"time"
+	//"time"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/grpc"
@@ -21,9 +21,8 @@ import (
 
 type server struct{}
 
-func webGetWorker(in <-chan string, wg *sync.WaitGroup,
-	stream greetpb.GreetService_GreetEveryOneServer) {
-	firstName := <-in
+func webGetWorker(firstName string, wg *sync.WaitGroup) {
+
 	result := "Processed " + firstName + " !"
 	fmt.Printf(result + "\n")
 
@@ -32,13 +31,7 @@ func webGetWorker(in <-chan string, wg *sync.WaitGroup,
 func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) error {
 	//fmt.Printf("GreetEveryOne getting called\n")
 	var wg sync.WaitGroup
-	numWorkers := 100
-	work := make(chan string, 1024)
-	// We'll spin off workers in a thread.
-	for i := 0; i < numWorkers; i++ {
-		// Within the loop, just spawn the Goroutine
-		go webGetWorker(work, &wg, stream)
-	}
+
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
@@ -55,7 +48,7 @@ func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) er
 			log.Fatalf("Error webGetWorker stream: %v", srErr)
 		}
 		wg.Add(1)
-		work <- req.GetGreeting().GetFirstName()
+		go webGetWorker(req.GetGreeting().GetFirstName(), &wg)
 
 	}
 
@@ -84,7 +77,7 @@ func (*server) GreetManyTime(req *greetpb.GreetManyTimeRequest, stm greetpb.Gree
 			Result: result,
 		}
 		stm.Send(res)
-		time.Sleep(1000 * time.Millisecond)
+		//time.Sleep(1000 * time.Millisecond)
 	}
 	return nil
 }

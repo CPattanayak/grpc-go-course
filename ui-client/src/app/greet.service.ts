@@ -36,11 +36,11 @@ export class GreetService {
       }));
     }
       Promise.all(this.promoseList).then(() => {
-       // alert('1');
-        resolve1('all' + this.promoseList.length + ' records are send to server');
+
+        resolve1('all ' + this.promoseList.length + ' records are send to server');
 
     });
-      //obs.complete();
+
 
 
     });
