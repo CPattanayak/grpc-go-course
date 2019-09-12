@@ -15,7 +15,7 @@ export class AppComponent implements OnInit{
  // response: Observable <GreetManyTimeResponse> ;
   receivedList: string[] = [];
   greet: GreetResponse;
- //bidirectionalResponse : Observable <GreetEveryOneResponse>;
+  bidirectionalResponse : string;
  bidirectionalList: string[] = [];
   ngOnInit(): void {
     this.getSingle();
@@ -24,11 +24,11 @@ export class AppComponent implements OnInit{
       this.receivedList.push(data['result']);
     });
     this.api.getGreatError();
-    //this.bidirectionalResponse=this.api.getGreatEveryOne();
-    this.api.getGreatEveryOne().subscribe((data: object)=>{
-      // alert(data['result']);
-      this.bidirectionalList.push(data['result']);
+    this.api.getGreatEveryOne().then((data:string)=>{
+     // alert(data);
+      this.bidirectionalResponse=data;
     });
+
 
   }
   getSingle() {

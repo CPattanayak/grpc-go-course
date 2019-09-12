@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"time"
 
@@ -20,8 +21,24 @@ import (
 
 type server struct{}
 
+func webGetWorker(in <-chan string, wg *sync.WaitGroup,
+	stream greetpb.GreetService_GreetEveryOneServer) {
+	firstName := <-in
+	result := "Processed " + firstName + " !"
+	fmt.Printf(result + "\n")
+
+	wg.Done()
+}
 func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) error {
-	fmt.Printf("GreetEveryOne getting called\n")
+	//fmt.Printf("GreetEveryOne getting called\n")
+	var wg sync.WaitGroup
+	numWorkers := 100
+	work := make(chan string, 1024)
+	// We'll spin off workers in a thread.
+	for i := 0; i < numWorkers; i++ {
+		// Within the loop, just spawn the Goroutine
+		go webGetWorker(work, &wg, stream)
+	}
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
@@ -30,17 +47,16 @@ func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) er
 		if err != nil {
 			log.Fatalf("Error while reading client stream: %v", err)
 		}
-		firstName := req.GetGreeting().GetFirstName()
-		result := "Hello " + firstName + " !"
-		//time.Sleep(1000 * time.Millisecond)
-		sendErr := stream.Send(&greetpb.GreetEveryOneResponse{
+		result := "Received " + req.GetGreeting().GetFirstName()
+		srErr := stream.Send(&greetpb.GreetEveryOneResponse{
 			Result: result,
 		})
-		//time.Sleep(1000 * time.Millisecond)
-		if sendErr != nil {
-			log.Fatalf("Error while sending data to client: %v", err)
-			return err
+		if srErr != nil {
+			log.Fatalf("Error webGetWorker stream: %v", srErr)
 		}
+		wg.Add(1)
+		work <- req.GetGreeting().GetFirstName()
+
 	}
 
 }
