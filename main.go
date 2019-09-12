@@ -7,25 +7,62 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"sync"
 
 	//"time"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
 )
 
 type server struct{}
+type GreetMessage struct {
+	Message string
+}
 
 func webGetWorker(firstName string, wg *sync.WaitGroup) {
 
 	result := "Processed " + firstName + " !"
-	fmt.Printf(result + "\n")
+	//fmt.Printf(result + "\n")
+	// Set client options
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//fmt.Println("Connected to MongoDB!")
+
+	// Get a handle for your collection
+	collection := client.Database("greetdb").Collection("greetpeople")
+
+	// Some dummy data to add to the Database
+	ruan := GreetMessage{Message: result}
+
+	// Insert a single document
+	insertResult, err := collection.InsertOne(context.TODO(), ruan)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+	err = client.Disconnect(context.TODO())
+
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("Connection to MongoDB closed.")
+	}
 	wg.Done()
 }
 func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) error {
@@ -70,15 +107,48 @@ func (*server) Greet(ctx context.Context, req *greetpb.GreetRequest) (*greetpb.G
 }
 
 func (*server) GreetManyTime(req *greetpb.GreetManyTimeRequest, stm greetpb.GreetService_GreetManyTimeServer) error {
-	firstNamme := req.GetGreeting().GetFirstName()
-	for i := 0; i < 20; i++ {
-		result := "Hello " + firstNamme + " number " + strconv.Itoa(i)
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//fmt.Println("Connected to MongoDB!")
+
+	// Get a handle for your collection
+	collection := client.Database("greetdb").Collection("greetpeople")
+	findOptions := options.Find()
+	findOptions.SetLimit(10000)
+	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for cur.Next(context.TODO()) {
+		var elem GreetMessage
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
 		res := &greetpb.GreetManyTimeResponse{
-			Result: result,
+			Result: elem.Message,
 		}
 		stm.Send(res)
-		//time.Sleep(1000 * time.Millisecond)
+
 	}
+	err = client.Disconnect(context.TODO())
+
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("Connection to MongoDB closed.")
+	}
+
 	return nil
 }
 func (*server) LongGreet(stm greetpb.GreetService_LongGreetServer) error {
@@ -102,7 +172,7 @@ func (*server) LongGreet(stm greetpb.GreetService_LongGreetServer) error {
 }
 func main() {
 
-	fmt.Println("Hello World")
+	//fmt.Println("Hello World")
 
 	s := grpc.NewServer()
 	greetpb.RegisterGreetServiceServer(s, &server{})
@@ -117,7 +187,7 @@ func main() {
 		Handler: allowCORS(http.HandlerFunc(handler)),
 	}
 
-	grpclog.Println("Starting server...")
+	fmt.Println("Starting server...")
 	log.Fatalln(httpServer.ListenAndServe())
 
 }

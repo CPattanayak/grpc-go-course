@@ -6,8 +6,11 @@ import:
 - package: github.com/improbable-eng/grpc-web
   subpackages:
   - go/grpcweb
+- package: go.mongodb.org/mongo-driver
+  subpackages:
+  - mongo
+  - mongo/options
 - package: google.golang.org/grpc
   subpackages:
   - codes
-  - grpclog
   - status

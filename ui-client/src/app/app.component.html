@@ -13,7 +13,7 @@
 
 
 <ul>
-  <li *ngFor="let item of receivedList">
-    {{item}}
+  <li *ngFor="let item of receivedList; let i = index">
+    {{item}} Index {{i}}
   </li>
 </ul>

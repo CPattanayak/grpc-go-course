@@ -19,14 +19,15 @@ export class AppComponent implements OnInit{
  bidirectionalList: string[] = [];
   ngOnInit(): void {
     this.getSingle();
-    this.api.getStream().subscribe((data: object)=>{
 
-      this.receivedList.push(data['result']);
-    });
     this.api.getGreatError();
     this.api.getGreatEveryOne().then((data:string)=>{
      // alert(data);
       this.bidirectionalResponse=data;
+      this.api.getStream().subscribe((data: object)=>{
+
+        this.receivedList.push(data['result']);
+      });
     });
 
 
