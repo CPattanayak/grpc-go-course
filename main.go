@@ -25,38 +25,24 @@ type GreetMessage struct {
 	Message string
 }
 
+var collection1 *mongo.Collection
+var findOptions *options.FindOptions
+
 func webGetWorker(firstName string, wg *sync.WaitGroup) {
 
 	result := "Processed " + firstName + " !"
 	//fmt.Printf(result + "\n")
 	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-
-	// Connect to MongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = client.Ping(context.TODO(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//fmt.Println("Connected to MongoDB!")
-
-	// Get a handle for your collection
-	collection := client.Database("greetdb").Collection("greetpeople")
 
 	// Some dummy data to add to the Database
 	ruan := GreetMessage{Message: result}
 
 	// Insert a single document
-	insertResult, err := collection.InsertOne(context.TODO(), ruan)
+	insertResult, err := collection1.InsertOne(context.TODO(), ruan)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-	err = client.Disconnect(context.TODO())
 
 	if err != nil {
 		log.Fatal(err)
@@ -107,25 +93,8 @@ func (*server) Greet(ctx context.Context, req *greetpb.GreetRequest) (*greetpb.G
 }
 
 func (*server) GreetManyTime(req *greetpb.GreetManyTimeRequest, stm greetpb.GreetService_GreetManyTimeServer) error {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
-	// Connect to MongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = client.Ping(context.TODO(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//fmt.Println("Connected to MongoDB!")
-
-	// Get a handle for your collection
-	collection := client.Database("greetdb").Collection("greetpeople")
-	findOptions := options.Find()
-	findOptions.SetLimit(10000)
-	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	cur, err := collection1.Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -140,13 +109,6 @@ func (*server) GreetManyTime(req *greetpb.GreetManyTimeRequest, stm greetpb.Gree
 		}
 		stm.Send(res)
 
-	}
-	err = client.Disconnect(context.TODO())
-
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("Connection to MongoDB closed.")
 	}
 
 	return nil
@@ -181,7 +143,25 @@ func main() {
 	handler := func(res http.ResponseWriter, req *http.Request) {
 		wrappedServer.ServeHTTP(res, req)
 	}
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions.SetMinPoolSize(50)
+	clientOptions.SetMaxPoolSize(100)
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	//fmt.Println("Connected to MongoDB!")
+
+	// Get a handle for your collection
+	collection1 = client.Database("greetdb").Collection("greetpeople")
+	findOptions := options.Find()
+	findOptions.SetLimit(10000)
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%d", 50051),
 		Handler: allowCORS(http.HandlerFunc(handler)),
