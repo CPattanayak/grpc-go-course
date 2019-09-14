@@ -44,11 +44,6 @@ func webGetWorker(firstName string, wg *sync.WaitGroup) {
 	}
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("Connection to MongoDB closed.")
-	}
 	wg.Done()
 }
 func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) error {
