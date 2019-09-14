@@ -104,9 +104,11 @@ func (*server) GreetManyTime(req *greetpb.GreetManyTimeRequest, stm greetpb.Gree
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		res := &greetpb.GreetManyTimeResponse{
 			Result: elem.Message,
 		}
+		//fmt.Printf("Executing GreetManyTime")
 		stm.Send(res)
 
 	}

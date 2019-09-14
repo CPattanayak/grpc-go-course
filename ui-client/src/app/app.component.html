@@ -12,8 +12,11 @@
 <h5>angular-grpc-serverstream</h5>
 
 
-<ul>
-  <li *ngFor="let item of receivedList; let i = index">
-    {{item}} Index {{i}}
-  </li>
-</ul>
+
+  <div *ngIf="bidirectionalResponseObs1 | async as bidirectionalResponseObs1;else loading">
+    <li *ngFor="let item of bidirectionalResponseObs1;let i = index">
+      {{item}} Process {{i}}
+    </li>
+  </div>
+<ng-template #loading>Loading Data</ng-template>
+
