@@ -16,12 +16,8 @@ export class GreetService {
     this.client = new GreetServiceClient('http://localhost:50051');
   }
 
-  getGreatEveryOne(): Promise <string> {
-    return new Promise((resolve1, reject1) =>{
-
+  async getGreatEveryOne(): Promise <string[]> {
       const stream = this.client.greetEveryOne();
-
-
       for (let i = 0; i < 5000; i++) {
       this.promoseList.push(new Promise((resolve, reject) => {
         const req = new GreetEveryOneRequest();
@@ -32,18 +28,10 @@ export class GreetService {
         req.setGreeting(great);
 
         stream.write(req);
-        resolve('Success');
+        resolve('Success' + i);
       }));
     }
-      Promise.all(this.promoseList).then(() => {
-
-        resolve1('all ' + this.promoseList.length + ' records are send to server');
-
-    });
-
-
-
-    });
+      return await Promise.all(this.promoseList);
 
   }
   getGreat(): Promise <object> {

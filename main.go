@@ -58,6 +58,8 @@ func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) er
 		if err != nil {
 			log.Fatalf("Error while reading client stream: %v", err)
 		}
+		wg.Add(1)
+		go webGetWorker(req.GetGreeting().GetFirstName(), &wg)
 		result := "Received " + req.GetGreeting().GetFirstName()
 		srErr := stream.Send(&greetpb.GreetEveryOneResponse{
 			Result: result,
@@ -65,8 +67,6 @@ func (*server) GreetEveryOne(stream greetpb.GreetService_GreetEveryOneServer) er
 		if srErr != nil {
 			log.Fatalf("Error webGetWorker stream: %v", srErr)
 		}
-		wg.Add(1)
-		go webGetWorker(req.GetGreeting().GetFirstName(), &wg)
 
 	}
 
