@@ -40,24 +40,26 @@ export class GreetService {
     return userIDs.reduce( async (previousPromise, nextID) => {
       await previousPromise;
       return new Promise((resolve, reject) => {
-       // setTimeout(function(){resolve(time);},time);
-        const req = new GreetEveryOneRequest();
-        const great = new Greeting();
-        great.setFirstName('Chandan' + nextID);
-        great.setLastName('Pattanayak');
+        setTimeout(() => {
+          const req = new GreetEveryOneRequest();
+          const great = new Greeting();
+          great.setFirstName('Chandan' + nextID);
+          great.setLastName('Pattanayak');
 
-        req.setGreeting(great);
+          req.setGreeting(great);
 
-        stream.write(req);
-        resolve( nextID);
+          stream.write(req);
+          resolve( nextID);
+        }, 0.1);
+
       });
     }, Promise.resolve());
   }
 
   async  processArrayPromiseAll() : Promise <any[]>   {
-    const array=Array.from(Array(100000).keys());
+    const array = Array.from(Array(100000).keys());
     const stream = this.client.greetEveryOne();
-    const promises = array.map((item)=>{
+    const promises = array.map((item) => {
      return new Promise((resolve, reject) => {
       const req = new GreetEveryOneRequest();
       const great = new Greeting();
