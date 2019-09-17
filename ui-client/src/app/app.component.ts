@@ -24,9 +24,9 @@ export class AppComponent implements OnInit {
     this.api.getGreatError();
     const receivedList = new Array<string>();
     const bidirectionalResponseObs = new BehaviorSubject<string[]>([]);
-    this.api.getGreatEveryOne().then((data: string[]) => {
+    this.api.processArrayPromiseReduce().then((data: any) => {
 
-      this.bidirectionalResponse = 'Server response data length' + data.length;
+      this.bidirectionalResponse = 'Server response data length' + data;
 
       this.api.getStream().subscribe(data1 => {
         receivedList.push(data1['result']);

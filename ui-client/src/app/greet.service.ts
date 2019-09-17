@@ -34,6 +34,49 @@ export class GreetService {
       return await Promise.all(this.promoseList);
 
   }
+  async processArrayPromiseReduce(): Promise<any>{
+    const userIDs = Array.from(Array(100000).keys());
+    const stream = this.client.greetEveryOne();
+    return userIDs.reduce( async (previousPromise, nextID) => {
+      await previousPromise;
+      return new Promise((resolve, reject) => {
+       // setTimeout(function(){resolve(time);},time);
+        const req = new GreetEveryOneRequest();
+        const great = new Greeting();
+        great.setFirstName('Chandan' + nextID);
+        great.setLastName('Pattanayak');
+
+        req.setGreeting(great);
+
+        stream.write(req);
+        resolve( nextID);
+      });
+    }, Promise.resolve());
+  }
+
+  async  processArrayPromiseAll() : Promise <any[]>   {
+    const array=Array.from(Array(100000).keys());
+    const stream = this.client.greetEveryOne();
+    const promises = array.map((item)=>{
+     return new Promise((resolve, reject) => {
+      const req = new GreetEveryOneRequest();
+      const great = new Greeting();
+      great.setFirstName('Chandan' + item);
+      great.setLastName('Pattanayak');
+
+      req.setGreeting(great);
+
+      stream.write(req);
+      resolve('Success' + item);
+     // tslint:disable-next-line: semicolon
+     } )
+    });
+
+    // wait until all promises are resolved
+    return await Promise.all(promises);
+
+  }
+
   getGreat(): Promise <object> {
     return new Promise((resolve, reject) => {
       const req = new GreetRequest();
