@@ -35,7 +35,7 @@ export class GreetService {
 
   }
   async processArrayPromiseReduce(): Promise<any>{
-    const userIDs = Array.from(Array(500000).keys());
+    const userIDs = Array.from(Array(800000).keys());
     const stream = this.client.greetEveryOne();
     return userIDs.reduce( async (previousPromise, nextID) => {
       await previousPromise;

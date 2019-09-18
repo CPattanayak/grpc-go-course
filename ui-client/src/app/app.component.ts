@@ -29,11 +29,13 @@ export class AppComponent implements OnInit {
       const endDate = new Date();
       const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
       this.bidirectionalResponse = 'Server process data length ' + data + ' in ' + seconds + ' .sec';
+      if(data <= 100000){
       this.api.getStream().subscribe(data1 => {
         receivedList.push(data1['result']);
         bidirectionalResponseObs.next(receivedList);
         this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
       });
+      }
      });
 
 

@@ -141,8 +141,8 @@ func main() {
 		wrappedServer.ServeHTTP(res, req)
 	}
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	clientOptions.SetMinPoolSize(100)
-	clientOptions.SetMaxPoolSize(200)
+	clientOptions.SetMinPoolSize(200)
+	clientOptions.SetMaxPoolSize(400)
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
