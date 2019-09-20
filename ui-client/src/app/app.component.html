@@ -1,4 +1,4 @@
-
+<!--
 <h5>angular-grpc-single</h5>
 <p>{{greet | json}}</p>
 <h5>angular-grpc-bidirectional</h5>
@@ -19,4 +19,9 @@
     </li>
   </div>
 <ng-template #loading>Loading Data</ng-template>
+ -->
 
+ <div class="form-group">
+  <input type="file" (change)="onFileSelect($event.target)" name="myfile">
+</div>
+<p>{{bidirectionalResponse }}</p>

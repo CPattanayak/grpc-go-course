@@ -56,6 +56,7 @@ export class GreetService {
     }, Promise.resolve());
   }
 
+
   async  processArrayPromiseAll() : Promise <any[]>   {
     const array = Array.from(Array(100000).keys());
     const stream = this.client.greetEveryOne();
