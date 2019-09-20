@@ -41,17 +41,12 @@ export class GreetService {
       await previousPromise;
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          //console.log(nextID);
-          const token: Array<string>= nextID.split(',');
-          //console.log(token[0]);
-          //console.log(token[1]);
+          const token: Array<string> = nextID.split(',');
           const req = new GreetEveryOneRequest();
           const great = new Greeting();
           great.setFirstName(token[0]);
           great.setLastName(token[1]);
-
           req.setGreeting(great);
-
           stream.write(req);
           resolve( token[0]);
         }, 0.1);
