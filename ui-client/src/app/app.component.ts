@@ -13,17 +13,17 @@ export class AppComponent implements OnInit {
   constructor(
     public api: GreetService
   ) {
-    this._api=api;
+
   }
 
   greet: GreetResponse;
   bidirectionalResponse : string;
-  _api :GreetService;
+
 
  bidirectionalResponseObs1 : Observable<string[]>;
   title = 'ui-client';
   ngOnInit(): void {
-    this._api=this.api;
+
     // this.getSingle();
 
     // this.api.getGreatError();
@@ -50,26 +50,15 @@ export class AppComponent implements OnInit {
   public onFileSelect(input: HTMLInputElement) {
 
     const files = input.files;
-    //var content = this.csvContent;
+    // var content = this.csvContent;
     if (files && files.length) {
-       /*
-        console.log("Filename: " + files[0].name);
-        console.log("Type: " + files[0].type);
-        console.log("Size: " + files[0].size + " bytes");
-        */
-
         const fileToRead = files[0];
-
         const fileReader = new FileReader();
-        //fileReader.onload = this.onFileLoad;
-
-        fileReader.readAsText(fileToRead, "UTF-8");
+        fileReader.readAsText(fileToRead, 'UTF-8');
         fileReader.onload = (e) => {
           const csv: string = fileReader.result.toString();
           const allTextLines = csv.split('\n');
-
           this.processCsv(allTextLines);
-
         };
 
     }
@@ -83,14 +72,12 @@ export class AppComponent implements OnInit {
       const endDate = new Date();
       const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
       this.bidirectionalResponse = 'Server process data length ' + allTextLines.length + ' in ' + seconds + ' .sec';
-     // if (data <= 100000) {
       this.api.getStream().subscribe(data1 => {
-       // console.log(data1['result']);
           receivedList.push(data1['result']);
           bidirectionalResponseObs.next(receivedList);
           this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
         });
-     // }
+
     });
   }
 
