@@ -25,3 +25,9 @@
   <input type="file" (change)="onFileSelect($event.target)" name="myfile">
 </div>
 <p>{{bidirectionalResponse }}</p>
+<div *ngIf="bidirectionalResponseObs1 | async as bidirectionalResponseObs1;else loading">
+  <li *ngFor="let item of bidirectionalResponseObs1;let i = index">
+    {{item}} Process {{i}}
+  </li>
+</div>
+<ng-template #loading>Loading Data</ng-template>

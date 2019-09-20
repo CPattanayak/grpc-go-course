@@ -34,22 +34,26 @@ export class GreetService {
       return await Promise.all(this.promoseList);
 
   }
-  async processArrayPromiseReduce(): Promise<any>{
-    const userIDs = Array.from(Array(800000).keys());
+  async processArrayPromiseReduce(userIDs: Array<any>): Promise<any>{
+    //const userIDs = Array.from(Array(800000).keys());
     const stream = this.client.greetEveryOne();
     return userIDs.reduce( async (previousPromise, nextID) => {
       await previousPromise;
       return new Promise((resolve, reject) => {
         setTimeout(() => {
+          //console.log(nextID);
+          const token: Array<string>= nextID.split(',');
+          //console.log(token[0]);
+          //console.log(token[1]);
           const req = new GreetEveryOneRequest();
           const great = new Greeting();
-          great.setFirstName('Chandan' + nextID);
-          great.setLastName('Pattanayak');
+          great.setFirstName(token[0]);
+          great.setLastName(token[1]);
 
           req.setGreeting(great);
 
           stream.write(req);
-          resolve( nextID);
+          resolve( token[0]);
         }, 0.1);
 
       });

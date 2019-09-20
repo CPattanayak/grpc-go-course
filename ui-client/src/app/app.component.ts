@@ -45,44 +45,7 @@ export class AppComponent implements OnInit {
 
 
   }
-  onFileLoad(fileLoadedEvent): void {
-    const csvSeparator = ';';
-    const textFromFileLoaded = fileLoadedEvent.target.result;
 
-    const txt = textFromFileLoaded;
-
-    const lines: Array<string> = txt.split('\n');
-
-    const startDate = new Date();
-    const client = new GreetServiceClient('http://localhost:50051');
-    const stream = client.greetEveryOne();
-    lines.reduce( async (previousPromise, element) => {
-      await previousPromise;
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-
-          const cols: string[] = element.split(',');
-          const req = new GreetEveryOneRequest();
-          const great = new Greeting();
-          great.setFirstName(cols[0]);
-          great.setLastName(cols[1]);
-
-          req.setGreeting(great);
-
-          stream.write(req);
-          resolve( cols[0]);
-        }, 0.1);
-
-      });
-    }, Promise.resolve()).then((data: any) => {
-      const endDate = new Date();
-      const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
-      alert( 'Server process '+lines.length+' data in ' + seconds + ' .sec');
-
-
-    });
-
-   }
 
   public onFileSelect(input: HTMLInputElement) {
 
@@ -98,13 +61,39 @@ export class AppComponent implements OnInit {
         const fileToRead = files[0];
 
         const fileReader = new FileReader();
-        fileReader.onload = this.onFileLoad;
+        //fileReader.onload = this.onFileLoad;
 
         fileReader.readAsText(fileToRead, "UTF-8");
+        fileReader.onload = (e) => {
+          const csv: string = fileReader.result.toString();
+          const allTextLines = csv.split('\n');
+
+          this.processCsv(allTextLines);
+
+        };
 
     }
 
   }
+  private processCsv(allTextLines: Array<string>) {
+    const receivedList = new Array<string>();
+    const bidirectionalResponseObs = new BehaviorSubject<string[]>([]);
+    const startDate = new Date();
+    this.api.processArrayPromiseReduce(allTextLines).then((data: string) => {
+      const endDate = new Date();
+      const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
+      this.bidirectionalResponse = 'Server process data length ' + allTextLines.length + ' in ' + seconds + ' .sec';
+     // if (data <= 100000) {
+      this.api.getStream().subscribe(data1 => {
+       // console.log(data1['result']);
+          receivedList.push(data1['result']);
+          bidirectionalResponseObs.next(receivedList);
+          this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
+        });
+     // }
+    });
+  }
+
   getSingle() {
     this.api.getGreat().then((data: GreetResponse) => {
       this.greet = data;
