@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
 
   greet: GreetResponse;
   bidirectionalResponse : string;
+  //filter: any;
 
 
  bidirectionalResponseObs1 : Observable<string[]>;
