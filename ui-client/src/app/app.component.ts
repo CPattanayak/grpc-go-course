@@ -21,6 +21,9 @@ export class AppComponent implements OnInit {
 
   greet: GreetResponse;
   bidirectionalResponse : string;
+  totalLength=0;
+  progressLength = 0;
+
   //filter: any;
 
 
@@ -52,8 +55,12 @@ export class AppComponent implements OnInit {
 
 
   public onFileSelect(input: HTMLInputElement) {
-
+    this.totalLength = 0;
+    this.progressLength =0;
     const files = input.files;
+    setTimeout(() => {
+     this.progressLength = this.api.incromentReceived;
+    }, 0.1);
     // var content = this.csvContent;
     if (files && files.length) {
         const fileToRead = files[0];
@@ -62,8 +69,10 @@ export class AppComponent implements OnInit {
         fileReader.onload = (e) => {
           const csv: string = fileReader.result.toString();
           const allTextLines = csv.split('\n');
+          this.totalLength = allTextLines.length;
           this.processCsv(allTextLines);
         };
+
 
     }
 
@@ -74,14 +83,17 @@ export class AppComponent implements OnInit {
     const startDate = new Date();
     this.bidirectionalResponse=null;
     this.bidirectionalResponseObs1=null;
+
     this.api.processArrayPromiseReduce(allTextLines).then((data: string) => {
       const endDate = new Date();
       const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
       this.bidirectionalResponse = 'Server process data length ' + allTextLines.length + ' in ' + seconds + ' .sec';
       this.api.getStream().subscribe(data1 => {
-          receivedList.push(data1['result']);
-          bidirectionalResponseObs.next(receivedList);
-          this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
+        this.progressLength=this.api.incromentReceived;
+        receivedList.push(data1['result']);
+
+        bidirectionalResponseObs.next(receivedList);
+        this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
         });
 
     });

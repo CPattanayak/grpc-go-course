@@ -30,7 +30,7 @@
      *ngIf="bidirectionalResponse"
      type="success"
      (close)="bidirectionalResponse = null">{{ bidirectionalResponse }}</ngb-alert>
-
+     <p><ngb-progressbar *ngIf="bidirectionalResponse" showValue="true" type="warning" [value]="progressLength" [max]="totalLength"></ngb-progressbar></p>
       <div *ngIf="bidirectionalResponseObs1 | async as bidirectionalResponseObs1">
           <div class="col-sm-5" style="padding-top:20px;padding-bottom:20px;" >
               <input class="form-control" type="text" placeholder="Search......." [(ngModel)]="filter">

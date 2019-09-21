@@ -12,6 +12,7 @@ export class GreetService {
   client: GreetServiceClient;
   errorList: string[] = [];
   promoseList: Promise<string>[] = [];
+  incromentReceived=0;
   constructor() {
     this.client = new GreetServiceClient('http://localhost:50051');
   }
@@ -37,6 +38,7 @@ export class GreetService {
   async processArrayPromiseReduce(userIDs: Array<any>): Promise<any>{
     //const userIDs = Array.from(Array(800000).keys());
     const stream = this.client.greetEveryOne();
+
     return userIDs.reduce( async (previousPromise, nextID) => {
       await previousPromise;
       return new Promise((resolve, reject) => {
@@ -48,6 +50,7 @@ export class GreetService {
           great.setLastName(token[1]);
           req.setGreeting(great);
           stream.write(req);
+
           resolve( token[0]);
         }, 0.1);
 
@@ -125,6 +128,7 @@ export class GreetService {
   }
   getStream(): Observable <GreetManyTimeResponse> {
     return new Observable(obs => {
+      this.incromentReceived =0;
       const req = new GreetManyTimeRequest();
       const great = new Greeting();
       great.setFirstName('Chandan');
@@ -136,6 +140,7 @@ export class GreetService {
       });
       stream.on('data', (message: any) => {
         // console.log('ApiService.getStream.data', message.toObject());
+        this.incromentReceived ++;
         obs.next(message.toObject() as GreetManyTimeResponse);
       });
       stream.on('end', () => {
