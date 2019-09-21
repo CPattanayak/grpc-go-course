@@ -7,6 +7,7 @@ This project demonstrate how to use grpc with golang and Angularjs
 	 5.protoc installer [docs](https://github.com/google/protobuf/releases)(can be achived by npm optional)
 	 6.glide installer [docs](https://glide.sh/)
 	 7. grpcweb go get -u github.com/improbable-eng/grpc-web/go/grpcweb (Optional)
+	 8. mongodb loccal
 ## Project setup
      1.add $GOPATH/bin ,glide as classpath
 	 2. checkout project in $GOPATH/src
