@@ -9,6 +9,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { FormsModule } from '@angular/forms';
 import {FilterPipe} from './pipes';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {FilterPipe} from './pipes';
     NgxPaginationModule,
     Ng2SearchPipeModule,
     FormsModule,
+    NgxSpinnerModule,
     NgbModule
   ],
   providers: [GreetService],

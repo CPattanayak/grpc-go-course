@@ -158,7 +158,7 @@ func main() {
 	// Get a handle for your collection
 	collection1 = client.Database("greetdb").Collection("greetpeople")
 	findOptions := options.Find()
-	findOptions.SetLimit(10000)
+	findOptions.SetLimit(100000)
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%d", 50051),
 		Handler: allowCORS(http.HandlerFunc(handler)),

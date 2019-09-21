@@ -4,6 +4,7 @@ import { GreetManyTimeResponse, GreetResponse, GreetEveryOneResponse,GreetEveryO
 import { Observable, Subscription, of , BehaviorSubject} from 'rxjs';
 import {GreetServiceClient, Status} from '../app/proto/greetpb/greet_pb_service';
 import {NgbAccordionConfig} from '@ng-bootstrap/ng-bootstrap';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import {NgbAccordionConfig} from '@ng-bootstrap/ng-bootstrap';
 })
 export class AppComponent implements OnInit {
   constructor(
-    public api: GreetService, public config: NgbAccordionConfig
+    public api: GreetService, public config: NgbAccordionConfig,public spinner: NgxSpinnerService
   ) {
     config.closeOthers = true;
     config.type = 'info';
@@ -58,11 +59,9 @@ export class AppComponent implements OnInit {
     this.totalLength = 0;
     this.progressLength =0;
     const files = input.files;
-    setTimeout(() => {
-     this.progressLength = this.api.incromentReceived;
-    }, 0.1);
-    // var content = this.csvContent;
+
     if (files && files.length) {
+        this.spinner.show();
         const fileToRead = files[0];
         const fileReader = new FileReader();
         fileReader.readAsText(fileToRead, 'UTF-8');
@@ -88,6 +87,7 @@ export class AppComponent implements OnInit {
       const endDate = new Date();
       const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
       this.bidirectionalResponse = 'Server process data length ' + allTextLines.length + ' in ' + seconds + ' .sec';
+      this.spinner.hide();
       this.api.getStream().subscribe(data1 => {
         this.progressLength=this.api.incromentReceived;
         receivedList.push(data1['result']);
