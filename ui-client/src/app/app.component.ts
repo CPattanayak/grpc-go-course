@@ -3,17 +3,20 @@ import {GreetService} from './greet.service';
 import { GreetManyTimeResponse, GreetResponse, GreetEveryOneResponse,GreetEveryOneRequest,Greeting} from '../app/proto/greetpb/greet_pb';
 import { Observable, Subscription, of , BehaviorSubject} from 'rxjs';
 import {GreetServiceClient, Status} from '../app/proto/greetpb/greet_pb_service';
+import {NgbAccordionConfig} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [NgbAccordionConfig]
 })
 export class AppComponent implements OnInit {
   constructor(
-    public api: GreetService
+    public api: GreetService, public config: NgbAccordionConfig
   ) {
-
+    config.closeOthers = true;
+    config.type = 'info';
   }
 
   greet: GreetResponse;
@@ -68,6 +71,8 @@ export class AppComponent implements OnInit {
     const receivedList = new Array<string>();
     const bidirectionalResponseObs = new BehaviorSubject<string[]>([]);
     const startDate = new Date();
+    this.bidirectionalResponse=null;
+    this.bidirectionalResponseObs1=null;
     this.api.processArrayPromiseReduce(allTextLines).then((data: string) => {
       const endDate = new Date();
       const seconds = (endDate.getTime() - startDate.getTime()) / 1000;

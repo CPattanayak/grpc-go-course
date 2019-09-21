@@ -20,14 +20,40 @@
   </div>
 <ng-template #loading>Loading Data</ng-template>
  -->
+ <div class="container">
 
- <div class="form-group">
-  <input type="file" (change)="onFileSelect($event.target)" name="myfile">
+      <div class="form-group">
+        <input type="file" class="btn btn-primary" (change)="onFileSelect($event.target)" name="myfile">
+      </div>
+
+     <ngb-alert
+     *ngIf="bidirectionalResponse"
+     type="success"
+     (close)="bidirectionalResponse = null">{{ bidirectionalResponse }}</ngb-alert>
+
+      <div *ngIf="bidirectionalResponseObs1 | async as bidirectionalResponseObs1">
+          <div class="col-sm-5" style="padding-top:20px;padding-bottom:20px;" >
+              <input class="form-control" type="text" placeholder="Search......." [(ngModel)]="filter">
+          </div>
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+
+                    <th scope="col">Message</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let item of bidirectionalResponseObs1 | filter:filter |
+                     paginate: { itemsPerPage: 10, currentPage: p }">
+
+                      <td>{{item}}</td>
+                  </tr>
+              </tbody>
+          </table>
+          <ul class="pagination">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+          </ul>
+      </div>
+
+
 </div>
-<p>{{bidirectionalResponse }}</p>
-<div *ngIf="bidirectionalResponseObs1 | async as bidirectionalResponseObs1;else loading">
-  <li *ngFor="let item of bidirectionalResponseObs1;let i = index">
-    {{item}} Process {{i}}
-  </li>
-</div>
-<ng-template #loading>Loading Data</ng-template>
