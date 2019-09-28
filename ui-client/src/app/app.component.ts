@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
 
 
   public onFileSelect(input: HTMLInputElement) {
-    this.totalLength = 0;
+   // this.totalLength = 0;
     this.progressLength =0;
     const files = input.files;
 
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
         fileReader.onload = (e) => {
           const csv: string = fileReader.result.toString();
           const allTextLines = csv.split('\n');
-          this.totalLength = allTextLines.length;
+          this.totalLength += allTextLines.length;
           this.processCsv(allTextLines);
         };
 
@@ -77,28 +77,32 @@ export class AppComponent implements OnInit {
 
   }
   private processCsv(allTextLines: Array<string>) {
-    const receivedList = new Array<string>();
-    const bidirectionalResponseObs = new BehaviorSubject<string[]>([]);
+
     const startDate = new Date();
     this.bidirectionalResponse=null;
-    this.bidirectionalResponseObs1=null;
+
 
     this.api.processArrayPromiseReduce(allTextLines).then((data: string) => {
       const endDate = new Date();
       const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
       this.bidirectionalResponse = 'Server process data length ' + allTextLines.length + ' in ' + seconds + ' .sec';
       this.spinner.hide();
-      this.api.getStream().subscribe(data1 => {
-        this.progressLength=this.api.incromentReceived;
-        receivedList.push(data1['result']);
-
-        bidirectionalResponseObs.next(receivedList);
-        this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
-        });
 
     });
   }
+ private loadDBRecords(){
+  const receivedList = new Array<string>();
+  const bidirectionalResponseObs = new BehaviorSubject<string[]>([]);
+  this.bidirectionalResponseObs1=null;
+  this.api.getStream().subscribe(data1 => {
+    this.progressLength=this.api.incromentReceived;
+    receivedList.push(data1['result']);
 
+    bidirectionalResponseObs.next(receivedList);
+    this.bidirectionalResponseObs1 = bidirectionalResponseObs.asObservable();
+    });
+
+ }
   getSingle() {
     this.api.getGreat().then((data: GreetResponse) => {
       this.greet = data;

@@ -24,7 +24,7 @@
   <a class="navbar-brand">FileLoader</a>
   <div class="form-inline">
     <input type="file" class="btn btn-outline-success my-2 my-sm-0" (change)="onFileSelect($event.target)" name="myfile">
-
+    <button type="button" class="btn btn-info my-2 my-sm-0" (click)="loadDBRecords()">LoadData</button>
   </div>
 </nav>
  <div class="container">
@@ -41,7 +41,9 @@
      <ngb-alert
      *ngIf="bidirectionalResponse"
      type="success"
-     (close)="bidirectionalResponse = null">{{ bidirectionalResponse }}</ngb-alert>
+     (close)="bidirectionalResponse = null">{{ bidirectionalResponse }} Please LoadData
+
+    </ngb-alert>
      <p><ngb-progressbar *ngIf="bidirectionalResponse" showValue="true" type="warning" [value]="progressLength" [max]="totalLength"></ngb-progressbar></p>
       <div *ngIf="bidirectionalResponseObs1 | async as bidirectionalResponseObs1">
           <div class="col-sm-5" style="padding-top:20px;padding-bottom:20px;" >
