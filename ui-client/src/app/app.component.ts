@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
 
   greet: GreetResponse;
   bidirectionalResponse : string;
-  totalLength=0;
+  totalLength=10643;
   progressLength = 0;
 
   //filter: any;
