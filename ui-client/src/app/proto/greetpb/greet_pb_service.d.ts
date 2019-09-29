@@ -3,7 +3,7 @@
 
 import * as greetpb_greet_pb from "../greetpb/greet_pb";
 import {grpc} from "@improbable-eng/grpc-web";
-
+import { Cacheable } from 'ngx-cacheable';
 type GreetServiceGreet = {
   readonly methodName: string;
   readonly service: typeof GreetService;
@@ -89,6 +89,7 @@ export class GreetServiceClient {
     requestMessage: greetpb_greet_pb.GreetRequest,
     callback: (error: ServiceError|null, responseMessage: greetpb_greet_pb.GreetResponse|null) => void
   ): UnaryResponse;
+
   greetManyTime(requestMessage: greetpb_greet_pb.GreetManyTimeRequest, metadata?: grpc.Metadata): ResponseStream<greetpb_greet_pb.GreetManyTimeResponse>;
   longGreet(metadata?: grpc.Metadata): RequestStream<greetpb_greet_pb.LongGreetRequest>;
   greetEveryOne(metadata?: grpc.Metadata): BidirectionalStream<greetpb_greet_pb.GreetEveryOneRequest, greetpb_greet_pb.GreetEveryOneResponse>;

@@ -5,6 +5,7 @@ import { Observable, Subscription, of , BehaviorSubject} from 'rxjs';
 import {GreetServiceClient, Status} from '../app/proto/greetpb/greet_pb_service';
 import {NgbAccordionConfig} from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from "ngx-spinner";
+import { Cacheable } from 'ngx-cacheable';
 
 @Component({
   selector: 'app-root',
@@ -90,12 +91,14 @@ export class AppComponent implements OnInit {
 
     });
   }
+
  private loadDBRecords(){
   const receivedList = new Array<string>();
   const bidirectionalResponseObs = new BehaviorSubject<string[]>([]);
   this.bidirectionalResponseObs1=null;
   this.api.getStream().subscribe(data1 => {
     this.progressLength=this.api.incromentReceived;
+   // console.log(data1['result']);
     receivedList.push(data1['result']);
 
     bidirectionalResponseObs.next(receivedList);
